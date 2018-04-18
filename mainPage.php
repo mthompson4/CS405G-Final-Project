@@ -96,22 +96,44 @@
 
 <div><center><h1><font size="7">Bookstore Database</font></h1></center></div>
 
+<?php
+	if(isset($currentUserType) && $currentUserType == "Manager"){
+		?>
+		<form method="post" action="managerOptions.php">
+		<h1 align="right"><input type="submit" name="managerOptions" value="Manager Options" /></h1>
+		</form>
+		<?php
+	}
+?>
+
+<center>
 <form method="get">
-	<font size="5">Basic Search: </font>
-	<input type="text" name="search" style="width: 200px; height: 40px">	
-	<input type="submit" name="buttonPressed" value="Search" style="width: 150px; height: 40px; font-size:12pt">
-	<input type="submit" name="buttonPressed" id="test" value="Advanced" style="width: 150px; height: 40px; font-size:12pt"/><br/>
+	<table>
+		<tr>
+			<th><font size="5">Basic Search: </font></th>
+			<th><input type="text" name="search" style="width: 200px; height: 40px"></th>
+			<th><input type="submit" name="buttonPressed" value="Search" style="width: 150px; height: 40px; font-size:12pt"></th>
+			<th><input type="submit" name="buttonPressed" id="test" value="Advanced" style="width: 150px; height: 40px; font-size:12pt"/><br/></th>
+		</tr>
 	<?php
 		function advSearch(){
 			?>
-			<font size="5">Author: </font>
-			<input type="text" name="author" style="width: 200px; height: 40px">	
-			<font size="5">Subject: </font>
-			<input type="text" name="subject" style="width: 200px; height: 40px">	
-			<font size="5">Date Published: </font>
-			<input type="text" name="search" style="width: 200px; height: 40px">	
-			<font size="5">Price: </font>
-			<input type="number" name="search" style="width: 200px; height: 40px">	
+			<tr>
+				<th><font size="5">Author: </font></th>
+				<th><input type="text" name="author" style="width: 200px; height: 40px"></th>
+			</tr>
+			<tr>
+				<th><font size="5">Subject: </font></th>
+				<th><input type="text" name="subject" style="width: 200px; height: 40px"></th>
+			</tr>
+			<tr>	
+				<th><font size="5">Date Published: </font></th>
+				<th><input type="text" name="search" style="width: 200px; height: 40px"></th>
+			</tr>
+			<tr>
+				<th><font size="5">Price: </font></th>
+				<th><input type="number" name="search" style="width: 200px; height: 40px"></th>
+			</tr>
 			<?php
 		}
 
@@ -119,25 +141,14 @@
 		   advSearch();
 		}
 	?>
+	</table>
 </form>
+</center>
 <?php	
-	function showManagerOptionButton(){
-		?>
-		<form method="post" action="managerOptions.php">
-		<h1><input type="submit" name="managerOptions" value="Manager Options" /></h1><br/>
-		</form>
-		<?php
-	}
-	
-	if(isset($currentUserType) && $currentUserType == "Manager"){
-		showManagerOptionButton();
-	}
+
 	if(isset($currentFName)){
 		echo "<h1>Hi, ".$currentFName."!</h1>";
-	}
-	//echo "$currentUser".'</br>';
-	//echo "$currentPass".'</br>';
-	
+	}	
 
 ?>
 
