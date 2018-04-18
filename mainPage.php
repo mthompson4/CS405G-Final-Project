@@ -13,30 +13,7 @@
 	<center><h1><font size="7">Bookstore Database</font></h1></center>
 </div>
 
-<form method="post">
-    <input type="submit" name="test" id="test" value="RUN" /><br/>
-</form>
-
 <?php
-
-function testfun()
-{
-   echo "Your test function on button click is working";
-}
-
-if(array_key_exists('test',$_POST)){
-   testfun();
-}
-
-?>
-
-
-
-<?php
-	echo '<font size="5">Basic Search: </font><input type="text" name="searchBar" style="width: 200px; height: 25px" required>';
-	
-	echo '<form action="functioncalling.php"><input type="submit" name="insert" value="insert" onclick="insert()" /></form>';
-	
 	
 	$serverName = "127.0.0.1";
 	$serverUserName = "admin";
@@ -49,6 +26,12 @@ if(array_key_exists('test',$_POST)){
 		die("Connection Failed: ".mysqli_connect_error());
 	}
 	
+	function showManagerOptionButton(){
+		echo '<form method="post">';
+		echo '<h1><input type="submit" name="managerOptions" value="Manager Options" /></h1><br/>';
+		echo '</form>';
+	}
+	
 	if($_GET["buttonPressed"] == "Register"){
 		$currentEmail = $_POST["newUserEmail"];
 		$currentPass = $_POST["newUserPassword"];
@@ -59,6 +42,8 @@ if(array_key_exists('test',$_POST)){
 		$currentGender = $_POST["newUserGender"];
 		$currentUserType = "Customer";
 		
+		echo "<h1>Hi, $currentFName!</h1>";
+		
 		$sql = "INSERT INTO users(fname, mname, lname, email, password, age, gender, user_type)
 				VALUES('$currentFName', '$currentMName', '$currentLName', '$currentEmail', '$currentPass', '$currentAge', '$currentGender', '$currentUserType')";
 		
@@ -68,8 +53,31 @@ if(array_key_exists('test',$_POST)){
 		
 	}
 	else{
-		$currentUser = base64_decode(htmlspecialchars($_GET["user"]));
+		$currentEmail = base64_decode(htmlspecialchars($_GET["user"]));
 		$currentPass = base64_decode(htmlspecialchars($_GET["pass"]));
+		
+		$sql = 'SELECT fname, mname, lname, age, gender, user_type FROM users WHERE email="'.$currentEmail.'" AND password="'.$currentPass.'"';
+		
+		$results = mysqli_query($conn, $sql);
+		
+		if(mysqli_num_rows($results) > 0){
+			
+			$row = mysqli_fetch_assoc($results);
+			$currentFName = $row["fname"];
+			$currentMName = $row["mname"];
+			$currentLName = $row["lname"];
+			$currentAge = $row["age"];
+			$currentGender = $row["gender"];
+			$currentUserType = $row["user_type"];
+		
+		}
+		
+		echo "<h1>Hi, $currentFName!</h1>";
+		
+	}
+	
+	if($currentUserType == "Manager"){
+		showManagerOptionButton();
 	}
 	
 	//echo "$currentUser".'</br>';
