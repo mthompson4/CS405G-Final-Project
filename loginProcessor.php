@@ -11,12 +11,12 @@
 
 <?php
 
-	
+
 	$button = $_POST["buttonPressed"];
-	
+
 	$username = $_POST["userEmail"];
 	$password = $_POST["userPass"];
-	
+
 	//REGISTERING NEW USER
 	if($button == "Register"){
 		echo "<div>";
@@ -33,29 +33,29 @@
 		echo "<tr><th><font size='5'>Age: </font></th><th>".'<input type="number" name="newUserAge" style="width: 200px; height: 25px" required>'."</th></tr>";
 		echo "<tr><th><font size='5'>Gender: </font></th><th>".'<select name="newUserGender" style="width: 200px; height: 25px"> <option value="Male">Male</option> <option value="Female">Female</option> </select>'."</th></tr>";
 		echo "</table>";
-		echo "<br/>".'<input type="submit" name = "buttonPressed" value="Register" style="width: 150px; height: 40px; font-size:12pt">';		
+		echo "<br/>".'<input type="submit" name = "buttonPressed" value="Register" style="width: 150px; height: 40px; font-size:12pt">';
 		echo "</center>";
 		echo '</form>';
 	}
 	//LOGGING IN
 	else if($button == "Login"){
-		
+
 		$serverName = "127.0.0.1";
 		$serverUserName = "admin";
 		$serverPassword = "3j2l3j2klb3b2klb32l";
 		$dbName = "bookstore";
-		
+
 		$conn = mysqli_connect($serverName, $serverUserName, $serverPassword, $dbName);
-	
+
 		if(!$conn){
 			die("Connection Failed: ".mysqli_connect_error());
 		}
-		
+
 		$sql = 'SELECT email FROM users WHERE email="'.$username.'"';
 		$results = mysqli_query($conn, $sql);
 		//User not registered
 		if(mysqli_num_rows($results) == 0){
-			echo '<meta http-equiv="refresh" content = "2; url = login.html">';
+			echo '<meta http-equiv="refresh" content = "2; url = index.html">';
 			echo "There is no user registered with that email/password combination";
 		}
 		//User is registered
@@ -64,7 +64,7 @@
 			$sql = 'SELECT password FROM users WHERE email="'.$username.'" AND password="'.$password.'"';
 			$results = mysqli_query($conn, $sql);
 			if(mysqli_num_rows($results) == 0){
-				echo '<meta http-equiv="refresh" content = "2; url = login.html">';
+				echo '<meta http-equiv="refresh" content = "2; url = index.html">';
 				echo "Incorrect password";
 			}
 			//passwords do match
@@ -73,11 +73,11 @@
 				echo '<meta http-equiv="refresh" content = "2; url = mainPage.php/?buttonPressed=Login&user='.base64_encode($username).'&pass='.base64_encode($password).'">';
 			}
 		}
-		
+
 		mysqli_close($conn);
 	}
-	
-	
+
+
 ?>
 
 
