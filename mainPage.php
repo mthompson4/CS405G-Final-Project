@@ -13,7 +13,30 @@
 	<center><h1><font size="7">Bookstore Database</font></h1></center>
 </div>
 
+<form method="post">
+    <input type="submit" name="test" id="test" value="RUN" /><br/>
+</form>
+
 <?php
+
+function testfun()
+{
+   echo "Your test function on button click is working";
+}
+
+if(array_key_exists('test',$_POST)){
+   testfun();
+}
+
+?>
+
+
+
+<?php
+	echo '<font size="5">Basic Search: </font><input type="text" name="searchBar" style="width: 200px; height: 25px" required>';
+	
+	echo '<form action="functioncalling.php"><input type="submit" name="insert" value="insert" onclick="insert()" /></form>';
+	
 	
 	$serverName = "127.0.0.1";
 	$serverUserName = "admin";
