@@ -40,7 +40,7 @@
 		$sql = "SELECT * FROM users";
 		$results = mysqli_query($conn, $sql);
 		$row = mysqli_fetch_assoc($results);
-		echo '<form method = "get">';
+		echo '<form method = "post">';
 		echo "<table>";
 		echo "<tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Email</th><th>Password</th><th>Age</th><th>Gender</th><th>User Type</th><th>Option</th></tr>";
 		while($row != NULL){
@@ -54,13 +54,15 @@
 			echo "<td>".$row["gender"]."</td>";
 			echo "<td>".$row["user_type"]."</td>";
 			echo "<td>";
-			echo "<select name = 'userChange".$row["userid"].">";
+			echo "<select name = 'userChange".$row["userid"]."'>";
 			?>
+			
 				<option value="">--</option>
 				<option value="promote">Promote</option>
 				<option value="demote">Demote</option>
 				<option value="delete">Delete</option>
 			</select>
+			
 			</td>
 			<?php
 			echo "</tr>";
