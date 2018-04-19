@@ -97,7 +97,7 @@
 <?php
 	if(isset($currentUserType) && $currentUserType == "Manager"){
 		?>
-		<form method="post" action="managerOptions.php">
+		<form method="post" action="/managerOptions.php">
 		<h1 align="right"><input type="submit" name="managerOptions" value="Manager Options" /></h1>
 		</form>
 		<?php
