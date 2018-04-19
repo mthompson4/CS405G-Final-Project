@@ -102,6 +102,9 @@
 		</form>
 		<?php
 	}
+	if(isset($currentFName)){
+		echo "<h3>Hi, ".$currentFName."!</h3>";
+	}	
 ?>
 
 <center>
@@ -109,7 +112,7 @@
 	<table>
 		<tr>
 			<th><font size="5">Basic Search: </font></th>
-			<th><input type="text" name="search" style="width: 200px; height: 40px"></th>
+			<th><input type="text" name="search" style="width: 200px; height: 40px; font-size:16pt"></th>
 			<th><input type="submit" name="buttonPressed" value="Search" style="width: 150px; height: 40px; font-size:12pt"></th>
 			<th><input type="submit" name="buttonPressed" id="test" value="Advanced" style="width: 150px; height: 40px; font-size:12pt"/><br/></th>
 		</tr>
@@ -118,19 +121,24 @@
 		   	?>
 			<tr>
 				<th><font size="5">Author: </font></th>
-				<th><input type="text" name="author" style="width: 200px; height: 40px"></th>
+				<th><input type="text" name="author" style="width: 200px; height: 40px; font-size:16pt"></th>
 			</tr>
 			<tr>
 				<th><font size="5">Subject: </font></th>
-				<th><input type="text" name="subject" style="width: 200px; height: 40px"></th>
+				<th><input type="text" name="subject" style="width: 200px; height: 40px; font-size:16pt"></th>
+			</tr>
+			<tr>	
+				<th><font size="5">Publisher: </font></th>
+				<th><input type="text" name="publisher" style="width: 200px; height: 40px; font-size:16pt"></th>
 			</tr>
 			<tr>	
 				<th><font size="5">Date Published: </font></th>
-				<th><input type="text" name="search" style="width: 200px; height: 40px"></th>
+				<th><input type="date" name="publishDate" style="width: 200px; height: 40px; font-size:16pt"></th>
 			</tr>
 			<tr>
 				<th><font size="5">Price: </font></th>
-				<th><input type="number" name="search" style="width: 200px; height: 40px"></th>
+				<th><input type="number" name="priceLo" style="width: 98px; height: 40px; font-size:16pt">
+				<input type="number" name="priceHi" style="width: 98px; height: 40px; font-size:16pt"></th>
 			</tr>
 			<?php
 		}
@@ -139,18 +147,32 @@
 </form>
 
 <?php	
-
-	if(isset($currentFName)){
-		echo "<h1>Hi, ".$currentFName."!</h1>";
-	}	
-	
 	if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Search"){
-		$searchTerm = $_GET['search'];
-		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid AND name LIKE '%{$searchTerm}%' ORDER BY name";
+		$sql = "SELECT * FROM books, authors, keywords WHERE books.isbn = authors.authorid AND books.isbn = keywords.keyid";
+		$sql = $sql." AND name LIKE '%{$_GET['search']}%'";
+		if(isset($_GET['author'])){
+			$sql = $sql." AND author_name LIKE '%{$_GET['author']}%'";
+		}
+		if(isset($_GET['subject'])){
+			$sql = $sql." AND keyword LIKE '%{$_GET['subject']}%'";
+		}
+		if(isset($_GET['publisher'])){
+			$sql = $sql." AND publisher LIKE '%{$_GET['publisher']}%'";
+		}
+		if(isset($_GET['publishDate'])){
+			$sql = $sql." AND date_published LIKE '%{$_GET['publishDate']}%'";
+		}
+		if(isset($_GET['priceLo']) && $_GET['priceLo'] != ""){
+			$sql = $sql." AND price >= ".(int)$_GET['priceLo'];
+		}
+		if(isset($_GET['priceHi']) && $_GET['priceHi'] != ""){
+			$sql = $sql." AND price <= ".(int)$_GET['priceHi'];
+		}
+		$sql = $sql." ORDER BY name";
 	}else{
 		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid ORDER BY RAND() LIMIT 5";
 
-	}		
+	}
 	$results = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($results);
 	echo "<table>";
