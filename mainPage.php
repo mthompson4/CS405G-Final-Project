@@ -146,38 +146,45 @@
 		if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Advanced"){
 		   	?>
 			<table>
-			<tr>
-				<th><font size="5">Author: </font></th>
-				<th><input type="text" name="author" style="width: 200px; height: 40px; font-size:16pt"></th>
+				<tr>
+					<th><font size="5">Author: </font></th>
+					<th><input type="text" name="author" style="width: 200px; height: 40px; font-size:16pt"></th>
 
-				<th><font size="5">Subject: </font></th>
-				<th><input type="text" name="subject" style="width: 200px; height: 40px; font-size:16pt"></th>
-			</tr>
-			<tr>	
-				<th><font size="5">Publisher: </font></th>
-				<th><input type="text" name="publisher" style="width: 200px; height: 40px; font-size:16pt"></th>
-	
-				<th><font size="5">Date Published: </font></th>
-				<th><input type="date" name="publishDate" style="width: 200px; height: 40px; font-size:16pt"></th>
-			</tr>
-			<tr>
-				<th><font size="5">Price: </font></th>
-				<th><input type="number" name="priceLo" style="width: 98px; height: 40px; font-size:16pt">
-				<input type="number" name="priceHi" style="width: 98px; height: 40px; font-size:16pt"></th>
-				
-				<th><font size="5">Language: </font></th>
-				<th><input type="text" name="language" style="width: 200px; height: 40px; font-size:16pt"></th>
-			<tr>
-				<th><font size="5">Sort By: </font></th>
-				<th><select name="sortBy" style="width: 200px; height: 40px; font-size:16pt">
-					<option value="name">Title</option>
-					<option value="author_name">Author</option>
-					<option value="publisher">Publisher</option>
-					<option value="date_published">Date</option>
-					<option value="price">Price</option>
-					<option value="language">Language</option>
-				</select></th>
-			</tr>
+					<th><font size="5">Subject: </font></th>
+					<th><input type="text" name="subject" style="width: 200px; height: 40px; font-size:16pt"></th>
+				</tr>
+				<tr>	
+					<th><font size="5">Publisher: </font></th>
+					<th><input type="text" name="publisher" style="width: 200px; height: 40px; font-size:16pt"></th>
+		
+					<th><font size="5">Date Published: </font></th>
+					<th><input type="date" name="publishDate" style="width: 200px; height: 40px; font-size:16pt"></th>
+				</tr>
+				<tr>
+					<th><font size="5">Price: </font></th>
+					<th><input type="number" name="priceLo" style="width: 98px; height: 40px; font-size:16pt">
+					<input type="number" name="priceHi" style="width: 98px; height: 40px; font-size:16pt"></th>
+					
+					<th><font size="5">Language: </font></th>
+					<th><input type="text" name="language" style="width: 200px; height: 40px; font-size:16pt"></th>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<th><font size="5">Sort By: </font></th>
+					<th><select name="sortBy" style="width: 200px; height: 40px; font-size:16pt">
+						<option value="name">Title</option>
+						<option value="author_name">Author</option>
+						<option value="publisher">Publisher</option>
+						<option value="date_published">Date</option>
+						<option value="price">Price</option>
+						<option value="language">Language</option>
+					</select></th>
+					<th><select name="order" style="width: 200px; height: 40px; font-size:16pt">
+						<option value="ascending">Ascending</option>
+						<option value="descending">Descending</option>
+					</select></th>
+				</tr>
 			</table>
 			<?php
 		}
@@ -215,6 +222,11 @@
 		}else{
 			$sql = $sql."name";
 		}
+		if(isset($_GET['order']) && $_GET['order'] == 'descending'){
+			$sql = $sql." DESC";
+		}else{
+			$sql = $sql." ASC";
+		}
 	}else{
 		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid ORDER BY RAND() LIMIT 5";
 
@@ -225,7 +237,7 @@
 	echo "<tr><th>Title</th><th>Author</th><th>Publisher</th><th>Date Published</th><th>Price</th><th>Language</th></tr>";
 	while($row != NULL){
 		echo "<tr>";
-		echo "<td>".$row["name"]."</td>";
+		echo "<td><a href='/bookPage.php/?title=".$row["name"]."'>".$row["name"]."</a></td>";
 		echo "<td>".$row["author_name"]."</td>";
 		echo "<td>".$row["publisher"]."</td>";
 		echo "<td>".$row["date_published"]."</td>";
