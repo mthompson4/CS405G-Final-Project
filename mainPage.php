@@ -28,8 +28,6 @@
 		
 		mysqli_query($conn, $sql);
 		
-		mysqli_close($conn);
-		
 	}else if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Login"){
 		$currentEmail = base64_decode(htmlspecialchars($_GET["user"]));
 		$currentPass = base64_decode(htmlspecialchars($_GET["pass"]));
@@ -116,8 +114,8 @@
 			<th><input type="submit" name="buttonPressed" id="test" value="Advanced" style="width: 150px; height: 40px; font-size:12pt"/><br/></th>
 		</tr>
 	<?php
-		function advSearch(){
-			?>
+		if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Advanced"){
+		   	?>
 			<tr>
 				<th><font size="5">Author: </font></th>
 				<th><input type="text" name="author" style="width: 200px; height: 40px"></th>
@@ -136,21 +134,18 @@
 			</tr>
 			<?php
 		}
-
-		if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Advanced"){
-		   advSearch();
-		}
 	?>
 	</table>
 </form>
-</center>
+
 <?php	
 
 	if(isset($currentFName)){
 		echo "<h1>Hi, ".$currentFName."!</h1>";
 	}	
-
+	
+	mysqli_close($conn);
 ?>
-
+</center>
 </body>
 </html>

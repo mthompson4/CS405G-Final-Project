@@ -19,23 +19,25 @@
 
 	//REGISTERING NEW USER
 	if($button == "Register"){
-		echo "<div>";
-		echo '<center><h1><font size="7">Register New User</font></h1></center>';
-		echo "</div>";
-		echo '<form action="mainPage.php/?buttonPressed=Register" method="post">';
-		echo "<center>";
-		echo "<table>";
-		echo "<tr><th><font size='5'>Email: </font></th>"."<th>".'<input type="text" name="newUserEmail" style="width: 200px; height: 25px" required>'."</th></tr>";
-		echo "<tr><th><font size='5'>Password: </font></th><th>".'<input type="password" name="newUserPassword" style="width: 200px; height: 25px" required>'."</th></tr>";
-		echo "<tr><th><font size='5'>First Name: </font></th><th>".'<input type="text" name="newUserFName" style="width: 200px; height: 25px" required>'."</th></tr>";
-		echo "<tr><th><font size='5'>Middle Name: </font></th><th>".'<input type="text" name="newUserMName" style="width: 200px; height: 25px">'."</th></tr>";
-		echo "<tr><th><font size='5'>Last Name: </font></th><th>".'<input type="text" name="newUserLName" style="width: 200px; height: 25px" required>'."</th></tr>";
-		echo "<tr><th><font size='5'>Age: </font></th><th>".'<input type="number" name="newUserAge" style="width: 200px; height: 25px" required>'."</th></tr>";
-		echo "<tr><th><font size='5'>Gender: </font></th><th>".'<select name="newUserGender" style="width: 200px; height: 25px"> <option value="Male">Male</option> <option value="Female">Female</option> </select>'."</th></tr>";
-		echo "</table>";
-		echo "<br/>".'<input type="submit" name = "buttonPressed" value="Register" style="width: 150px; height: 40px; font-size:12pt">';
-		echo "</center>";
-		echo '</form>';
+		?>
+		<div>
+		<center><h1><font size="7">Register New User</font></h1></center>
+		</div>
+		<form action="mainPage.php/?buttonPressed=Register" method="post">
+		<center>
+		<table>
+		<tr><th><font size='5'>Email: </font></th><th><input type="text" name="newUserEmail" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Password: </font></th><th><input type="password" name="newUserPassword" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>First Name: </font></th><th><input type="text" name="newUserFName" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Middle Name: </font></th><th><input type="text" name="newUserMName" style="width: 200px; height: 25px"></th></tr>
+		<tr><th><font size='5'>Last Name: </font></th><th><input type="text" name="newUserLName" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Age: </font></th><th><input type="number" name="newUserAge" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Gender: </font></th><th><select name="newUserGender" style="width: 200px; height: 25px"><option value="Male">Male</option> <option value="Female">Female</option></select></th></tr>
+		</table>
+		<br/><input type="submit" name = "buttonPressed" value="Register" style="width: 150px; height: 40px; font-size:12pt">
+		</center>
+		</form>
+		<?php
 	}
 	//LOGGING IN
 	else if($button == "Login"){
