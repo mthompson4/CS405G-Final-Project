@@ -128,6 +128,41 @@
 			</form>-->
 		<?php
 	}
+	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Add Book"){
+		?>
+		<div>
+		<center><h1><font size="7">Add New Book</font></h1></center>
+		</div>
+		<form action="/managerOptions.php/?buttonPressed=Add" method="post">
+		<center>
+		<table>
+		<tr><th><font size='5'>Title: </font></th><th><input type="text" name="newBookTitle" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Summary: </font></th><th><input type="text" name="newBookSummary" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Language: </font></th><th><input type="text" name="newBookLanguage" style="width: 200px; height: 25px"></th></tr>
+		<tr><th><font size='5'>Publisher: </font></th><th><input type="text" name="newBookPublisher" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Date Published: </font></th><th><input type="date" name="newBookDate" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Price: </font></th><th><input type="number" name="newBookPrice" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Quantity: </font></th><th><input type="number" name="newBookQuantity" style="width: 200px; height: 25px" required></th></tr>
+		</table><br/>
+		<input type="submit" name = "buttonPressed" value="Add" style="width: 150px; height: 40px; font-size:12pt">
+		</center>
+		</form>
+		<?php
+	}
+	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Add"){
+		//echo "hi";
+		$insertingTitle = $_POST["newBookTitle"];
+		$insertingSummary = $_POST["newBookSummary"];
+		$insertingLanguage = $_POST["newBookLanguage"];
+		$insertingPublisher = $_POST["newBookPublisher"];
+		$insertingDate = $_POST["newBookDate"];
+		$insertingPrice = $_POST["newBookPrice"];
+		$insertingQuantity = $_POST["newBookQuantity"];
+		
+		$sql = "INSERT INTO books(name, summary, language, publisher, date_published, price, qty)
+				VALUES('$insertingTitle', '$insertingSummary', '$insertingLanguage', '$insertingPublisher', '$insertingDate', '$insertingPrice', '$insertingQuantity')";
+		mysqli_query($conn, $sql);
+	}
 	
 	mysqli_close($conn);
 ?>
