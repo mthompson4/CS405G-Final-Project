@@ -144,6 +144,22 @@
 		echo "<h1>Hi, ".$currentFName."!</h1>";
 	}	
 	
+	$sql = "SELECT * FROM books ORDER BY RAND() LIMIT 5";
+	
+	$results = mysqli_query($conn, $sql);
+
+	$row = mysqli_fetch_assoc($results);
+	echo "<table>";
+	echo "<tr><th>Title</th><th>Publisher</th><th>Price</th></tr>";
+	while($row != NULL){
+		echo "<tr>";
+		echo "<td>".$row["name"]."</td>";
+		echo "<td>".$row["publisher"]."</td>";
+		echo "<td>".$row["price"]."</td>";
+		echo "</tr>";
+		$row = mysqli_fetch_assoc($results);
+	}
+	echo "</table>";
 	mysqli_close($conn);
 ?>
 </center>
