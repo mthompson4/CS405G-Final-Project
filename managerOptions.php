@@ -28,6 +28,12 @@
 	<center><h1><font size="7">Bookstore Database</font></h1></center>
 </div>
 
+<h3 align='right'>
+<form method="post" action="/mainPage.php">
+<input type="submit" value="Home"/>
+</form>
+</h3>
+
 <center>
 	<form method="get">
 	<input type="submit" name="buttonPressed" value="Show Users" style="width: 150px; height: 40px; font-size:12pt">
@@ -86,17 +92,17 @@
 			if($_GET['userChange'.$row["userid"]] == "promote"){
 				$sqlupdate = "UPDATE users SET user_type = 'Manager' WHERE userid = ".$row["userid"];
 				mysqli_query($conn, $sqlupdate);
-				echo "User ".$row["fname"]." has been promoted to Manager.";
+				echo "User ".$row["fname"]." has been promoted to Manager.<br/>";
 			}
 			else if($_GET['userChange'.$row["userid"]] == "demote"){
 				$sqlupdate = "UPDATE users SET user_type = 'Customer' WHERE userid = ".$row["userid"];
 				mysqli_query($conn, $sqlupdate);
-				echo "User ".$row["fname"]." has been demoted to Customer.";
+				echo "User ".$row["fname"]." has been demoted to Customer.<br/>";
 			}
 			else if($_GET['userChange'.$row["userid"]] == "delete"){
 				$sqlupdate = "DELETE FROM users WHERE userid = ".$row['userid'];
 				mysqli_query($conn, $sqlupdate);
-				echo "User ".$row["fname"]." has been removed from the database.";
+				echo "User ".$row["fname"]." has been removed from the database.<br/>";
 			}
 			/*echo "<tr>";
 			echo "<td>".$row["fname"]."</td>";
@@ -163,7 +169,6 @@
 				VALUES('$insertingTitle', '$insertingSummary', '$insertingLanguage', '$insertingPublisher', '$insertingDate', '$insertingPrice', '$insertingQuantity')";
 		mysqli_query($conn, $sql);
 	}
-	
 	mysqli_close($conn);
 ?>
 
