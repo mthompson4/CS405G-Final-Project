@@ -1,4 +1,9 @@
 <?php
+
+	if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Log Out"){
+		unset($_COOKIE['user']);
+		unset($_COOKIE['pass']);
+	}
 	$serverName = 		"127.0.0.1";
 	$serverUserName = 	"admin";
 	$serverPassword = 	"3j2l3j2klb3b2klb32l";
@@ -93,18 +98,38 @@
 <body>
 
 <div><center><h1><font size="7">Bookstore Database</font></h1></center></div>
-
+<table style="float:right"><tr>
 <?php
-	if(isset($currentUserType) && $currentUserType == "Manager"){
+	if(isset($currentFName)){
+		echo "<th><h3 align = 'right'>Hi, ".$currentFName."!</h3></th>";
+	}	
+	if(isset($currentUserType)){
+		if($currentUserType == "Manager"){
+			?>
+			<th>
+			<form method="post" action="/managerOptions.php">
+			<input type="submit" name="managerOptions" value="Manager Options" />
+			</form>
+			</th>
+			<?php
+		}
 		?>
-		<form method="post" action="/managerOptions.php">
-		<h1 align="right"><input type="submit" name="managerOptions" value="Manager Options" /></h1>
+		<th>
+		<form method="get">
+		<input type="submit" name="buttonPressed" value="Log Out"/>
 		</form>
+		</th>
+		<?php
+	}else{
+		?>
+		<th>
+		<form method="post" action="/index.html">
+		<input type="submit" name="buttonPressed" value="Log In"/>
+		</form>
+		</th>
 		<?php
 	}
-	if(isset($currentFName)){
-		echo "<h3>Hi, ".$currentFName."!</h3>";
-	}	
+	echo "</tr></table></br></br></br>";
 ?>
 
 <center>
@@ -116,22 +141,22 @@
 			<th><input type="submit" name="buttonPressed" value="Search" style="width: 150px; height: 40px; font-size:12pt"></th>
 			<th><input type="submit" name="buttonPressed" id="test" value="Advanced" style="width: 150px; height: 40px; font-size:12pt"/><br/></th>
 		</tr>
+	</table>
 	<?php
 		if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Advanced"){
 		   	?>
+			<table>
 			<tr>
 				<th><font size="5">Author: </font></th>
 				<th><input type="text" name="author" style="width: 200px; height: 40px; font-size:16pt"></th>
-			</tr>
-			<tr>
+
 				<th><font size="5">Subject: </font></th>
 				<th><input type="text" name="subject" style="width: 200px; height: 40px; font-size:16pt"></th>
 			</tr>
 			<tr>	
 				<th><font size="5">Publisher: </font></th>
 				<th><input type="text" name="publisher" style="width: 200px; height: 40px; font-size:16pt"></th>
-			</tr>
-			<tr>	
+	
 				<th><font size="5">Date Published: </font></th>
 				<th><input type="date" name="publishDate" style="width: 200px; height: 40px; font-size:16pt"></th>
 			</tr>
@@ -139,11 +164,24 @@
 				<th><font size="5">Price: </font></th>
 				<th><input type="number" name="priceLo" style="width: 98px; height: 40px; font-size:16pt">
 				<input type="number" name="priceHi" style="width: 98px; height: 40px; font-size:16pt"></th>
+				
+				<th><font size="5">Language: </font></th>
+				<th><input type="text" name="language" style="width: 200px; height: 40px; font-size:16pt"></th>
+			<tr>
+				<th><font size="5">Sort By: </font></th>
+				<th><select name="sortBy" style="width: 200px; height: 40px; font-size:16pt">
+					<option value="name">Title</option>
+					<option value="author_name">Author</option>
+					<option value="publisher">Publisher</option>
+					<option value="date_published">Date</option>
+					<option value="price">Price</option>
+					<option value="language">Language</option>
+				</select></th>
 			</tr>
+			</table>
 			<?php
 		}
 	?>
-	</table>
 </form>
 
 <?php	
@@ -168,7 +206,15 @@
 		if(isset($_GET['priceHi']) && $_GET['priceHi'] != ""){
 			$sql = $sql." AND price <= ".(int)$_GET['priceHi'];
 		}
-		$sql = $sql." ORDER BY name";
+		if(isset($_GET['language'])){
+			$sql = $sql." AND language LIKE '%{$_GET['language']}%'";
+		}
+		$sql = $sql." ORDER BY ";
+		if(isset($_GET['sortBy'])){
+			$sql = $sql.$_GET['sortBy'];
+		}else{
+			$sql = $sql."name";
+		}
 	}else{
 		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid ORDER BY RAND() LIMIT 5";
 
@@ -176,13 +222,15 @@
 	$results = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($results);
 	echo "<table>";
-	echo "<tr><th>Title</th><th>Author</th><th>Publisher</th><th>Price</th></tr>";
+	echo "<tr><th>Title</th><th>Author</th><th>Publisher</th><th>Date Published</th><th>Price</th><th>Language</th></tr>";
 	while($row != NULL){
 		echo "<tr>";
 		echo "<td>".$row["name"]."</td>";
 		echo "<td>".$row["author_name"]."</td>";
 		echo "<td>".$row["publisher"]."</td>";
+		echo "<td>".$row["date_published"]."</td>";
 		echo "<td>$".$row["price"]."</td>";
+		echo "<td>".$row["language"]."</td>";
 		echo "</tr>";
 		$row = mysqli_fetch_assoc($results);
 	}
