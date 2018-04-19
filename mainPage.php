@@ -25,8 +25,8 @@
 		$currentGender = 	$_POST["newUserGender"];
 		$currentUserType = "Customer";
 		
-		setcookie("user", $currentEmail);
-		setcookie("pass", $currentPass);
+		setcookie("user", $currentEmail, 0, "/");
+		setcookie("pass", $currentPass, 0, "/");
 		
 		$sql = "INSERT INTO users(fname, mname, lname, email, password, age, gender, user_type)
 				VALUES('$currentFName', '$currentMName', '$currentLName', '$currentEmail', '$currentPass', '$currentAge', '$currentGender', '$currentUserType')";
@@ -37,8 +37,8 @@
 		$currentEmail = base64_decode(htmlspecialchars($_GET["user"]));
 		$currentPass = base64_decode(htmlspecialchars($_GET["pass"]));
 		
-		setcookie("user", $currentEmail);
-		setcookie("pass", $currentPass);
+		setcookie("user", $currentEmail, 0, "/");
+		setcookie("pass", $currentPass, 0, "/");
 		
 		$sql = 'SELECT fname, mname, lname, age, gender, user_type FROM users WHERE email="'.$currentEmail.'" AND password="'.$currentPass.'"';
 		
