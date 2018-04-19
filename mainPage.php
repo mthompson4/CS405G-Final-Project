@@ -144,18 +144,23 @@
 		echo "<h1>Hi, ".$currentFName."!</h1>";
 	}	
 	
-	$sql = "SELECT * FROM books ORDER BY RAND() LIMIT 5";
-	
-	$results = mysqli_query($conn, $sql);
+	if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Search"){
+		$searchTerm = $_GET['search'];
+		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid AND name LIKE '%{$searchTerm}%' ORDER BY name";
+	}else{
+		$sql = "SELECT * FROM books, authors WHERE books.isbn = authors.authorid ORDER BY RAND() LIMIT 5";
 
+	}		
+	$results = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($results);
 	echo "<table>";
-	echo "<tr><th>Title</th><th>Publisher</th><th>Price</th></tr>";
+	echo "<tr><th>Title</th><th>Author</th><th>Publisher</th><th>Price</th></tr>";
 	while($row != NULL){
 		echo "<tr>";
 		echo "<td>".$row["name"]."</td>";
+		echo "<td>".$row["author_name"]."</td>";
 		echo "<td>".$row["publisher"]."</td>";
-		echo "<td>".$row["price"]."</td>";
+		echo "<td>$".$row["price"]."</td>";
 		echo "</tr>";
 		$row = mysqli_fetch_assoc($results);
 	}
