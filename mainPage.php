@@ -174,7 +174,6 @@
 					<th><font size="5">Sort By: </font></th>
 					<th><select name="sortBy" style="width: 200px; height: 40px; font-size:16pt">
 						<option value="name">Title</option>
-						<option value="author_name">Author</option>
 						<option value="publisher">Publisher</option>
 						<option value="date_published">Date</option>
 						<option value="price">Price</option>
