@@ -30,7 +30,7 @@
 
 <h3 align='right'>
 <form method="post" action="/mainPage.php">
-<input type="submit" value="Home"/>
+<input type="submit" value="Home" style="width: 150px; height: 40px; font-size:12pt"/>
 </form>
 </h3>
 
@@ -127,7 +127,8 @@
 		<tr><th><font size='5'>Publisher: </font></th><th><input type="text" name="newBookPublisher" style="width: 200px; height: 25px" required></th></tr>
 		<tr><th><font size='5'>Date Published: </font></th><th><input type="date" name="newBookDate" style="width: 200px; height: 25px" required></th></tr>
 		<tr><th><font size='5'>Price: </font></th><th><input type="number" name="newBookPrice" style="width: 200px; height: 25px" required></th></tr>
-		<tr><th><font size='5'>Quantity: </font></th><th><input type="number" name="newBookQuantity" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Quantity: </font></th><th><input type="number" name="newBookQuantity" style="width: 200px; height: 25px" required></th></tr>	
+		<tr><th><font size='5'>Keywords: </font></th><th><input type="text" name="newBookKeywords" style="width: 200px; height: 25px" required></th></tr>
 		</table><br/>
 		<input type="submit" name = "buttonPressed" value="Add" style="width: 150px; height: 40px; font-size:12pt">
 		</center>
@@ -143,11 +144,12 @@
 		$insertingDate = $_POST["newBookDate"];
 		$insertingPrice = $_POST["newBookPrice"];
 		$insertingQuantity = $_POST["newBookQuantity"];
+		$insertingKeywords = $_POST['newBookKeywords'];
 		
 		$sql = "INSERT INTO books(name, summary, language, publisher, date_published, price, qty)
 				VALUES('$insertingTitle', '$insertingSummary', '$insertingLanguage', '$insertingPublisher', '$insertingDate', '$insertingPrice', '$insertingQuantity')";
 		mysqli_query($conn, $sql);
-		$authorlist = explode(" ", $insertingAuthors);
+		$authorlist = explode(",", $insertingAuthors);
 		$sqlgetnewisbn = "SELECT isbn FROM books WHERE name = '".$insertingTitle."'";
 		$newisbncall = mysqli_query($conn, $sqlgetnewisbn);
 		$row = mysqli_fetch_assoc($newisbncall);
@@ -156,6 +158,11 @@
 			$sqlAddNewAuthors = "INSERT INTO authors(authorid, author_name) VALUES(".$newisbn.", '".$authorlist[$x]."')";
 			mysqli_query($conn, $sqlAddNewAuthors);
 		}
+		$keywordlist = explode(",", $insertingKeywords);
+		for($x = 0; $x < count($keywordlist); $x++){
+			$sqlAddNewKeywords = "INSERT INTO keywords(keyid, keyword) VALUES(".$newisbn.", '".$keywordlist[$x]."')";
+			mysqli_query($conn, $sqlAddNewKeywords);
+		}
 		
 	}
 	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Edit Books"){
@@ -163,12 +170,23 @@
 		$results = mysqli_query($conn, $sql);
 		$row = mysqli_fetch_assoc($results);
 		echo '<form method = "get">';
-		echo "<table>";
-		echo "<tr><th>Title</th><th>ISBN</th><th>Summary</th><th>Language</th><th>Publisher</th><th>Publishing Date</th><th>Price</th><th>Quantity</th><th>Keywords</th><th>Edit</th><th>Delete</th></tr>";
+		echo "<center>";
+		echo "<table bgcolor='#CCCCCC' style='border: 1px solid black; border-collapse: collapse;'>";
+		echo "<tr style='border: 1px solid black; border-collapse: collapse;'><th>Title</th><th>ISBN</th><th>Authors</th><th>Summary</th><th>Language</th><th>Publisher</th><th>Publishing Date</th><th>Price</th><th>Quantity</th><th>Keywords</th><th>Edit</th><th>Delete</th></tr>";
 		while($row != NULL){
-			echo "<tr>";
+			echo "<tr style='border: 1px solid black; border-collapse: collapse;'>";
 			echo "<td>".$row["name"]."</td>";
 			echo "<td>".$row["isbn"]."</td>";
+			$sqlgetauthors = "SELECT author_name FROM authors WHERE authorid = ".$row['isbn'];
+			$authorlist = mysqli_query($conn, $sqlgetauthors);
+			$currentAuthor = mysqli_fetch_assoc($authorlist);
+			$authors = "";
+			while($currentAuthor != NULL){
+				$authors = $authors.$currentAuthor['author_name']."</br>";
+				$currentAuthor = mysqli_fetch_assoc($authorlist);
+			}
+			
+			echo "<td>$authors</td>";
 			echo "<td>".$row["summary"]."</td>";
 			echo "<td>".$row["language"]."</td>";
 			echo "<td>".$row["publisher"]."</td>";
@@ -201,6 +219,7 @@
 		}
 		?>
 			</table>
+			</center>
 			</form>
 		<?php
 	}
@@ -217,6 +236,24 @@
 		<center>
 		<table>
 		<tr><th><font size='5'>Title: </font></th><th><input type="text" name="editedBookTitle" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["name"])?>" required></th></tr>
+		<?php
+		
+		$sqlauthors = "SELECT author_name FROM authors WHERE authorid = ".$row['isbn'];
+		$authorresults = mysqli_query($conn, $sqlauthors);
+		$authorRow = mysqli_fetch_assoc($authorresults);
+		$authorString = "";
+		$index = 1;
+		while($authorRow != NULL){
+			$authorString = $authorString.$authorRow['author_name'];
+			if(mysqli_num_rows($authorresults) - $index != 0){
+				$authorString = $authorString.", ";
+			}
+			$authorRow = mysqli_fetch_assoc($authorresults);
+			$index++;
+		}
+		
+		?>
+		<tr><th><font size='5'>Authors: </font></th><th><input type="text" name="editedBookAuthors" style="width: 200px; height: 25px" value = "<?php echo $authorString ?>" required></th></tr>
 		<tr><th><font size='5'>Summary: </font></th><th><input type="text" name="editedBookSummary" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["summary"])?>" required></th></tr>
 		<tr><th><font size='5'>Language: </font></th><th><input type="text" name="editedBookLanguage" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["language"])?>"></th></tr>
 		<tr><th><font size='5'>Publisher: </font></th><th><input type="text" name="editedBookPublisher" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["publisher"])?>" required></th></tr>
@@ -229,9 +266,14 @@
 		$keywordresults = mysqli_query($conn, $sqlkeywords);
 		$keywordRow = mysqli_fetch_assoc($keywordresults);
 		$keywordString = "";
+		$index = 1;
 		while($keywordRow != NULL){
-			$keywordString = $keywordString.$keywordRow['keyword']." ";
+			$keywordString = $keywordString.$keywordRow['keyword'];
+			if(mysqli_num_rows($keywordresults) - $index != 0){
+				$keywordString = $keywordString.", ";
+			}
 			$keywordRow = mysqli_fetch_assoc($keywordresults);
+			$index++;
 		}
 		
 		?>
@@ -258,12 +300,19 @@
 			}
 			$sqledit = "UPDATE books SET name = '".$_POST['editedBookTitle']."', summary = '".$_POST['editedBookSummary']."', language = '".$_POST['editedBookLanguage']."', publisher = '".$_POST['editedBookPublisher']."', date_published = '".$_POST['editedBookDate']."', price = '".$_POST['editedBookPrice']."', qty = '".$_POST['editedBookQuantity']."' WHERE isbn = ".$editingISBN; 
 			mysqli_query($conn, $sqledit);
-			$keywordArray = explode(" ", $_POST['editedBookKeywords']);
+			$keywordArray = explode(",", $_POST['editedBookKeywords']);
 			$sqlDeleteCurrentKeywords = "DELETE FROM keywords WHERE keyid = ".$_GET['ISBN'];
 			mysqli_query($conn, $sqlDeleteCurrentKeywords);
 			for($x = 0; $x < count($keywordArray); $x++){
 				$sqlAddNewKeywords = "INSERT INTO keywords(keyid, keyword) VALUES(".$_GET['ISBN'].", '".$keywordArray[$x]."')";
 				mysqli_query($conn, $sqlAddNewKeywords);
+			}
+			$authorArray = explode(",", $_POST['editedBookAuthors']);
+			$sqlDeleteCurrentAuthors = "DELETE FROM authors WHERE authorid = ".$_GET['ISBN'];
+			mysqli_query($conn, $sqlDeleteCurrentAuthors);
+			for($x = 0; $x < count($authorArray); $x++){
+				$sqlAddNewAuthors = "INSERT INTO authors(authorid, author_name) VALUES(".$_GET['ISBN'].", '".$authorArray[$x]."')";
+				mysqli_query($conn, $sqlAddNewAuthors);
 			}
 			//echo "$sqledit<br/>";
 			echo "Book updated in database.";
