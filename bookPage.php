@@ -72,7 +72,7 @@
 		}
 		?>
 		<th>
-		<form method="get">
+		<form method="get" action="/mainPage.php">
 		<input type="submit" name="buttonPressed" value="Log Out"/>
 		</form>
 		</th>
@@ -86,6 +86,13 @@
 		</th>
 		<?php
 	}
+	?>
+	<th>
+	<form method="post" action="/mainPage.php">
+	<input type="submit" value="Home"/>
+	</form>
+	</th>
+	<?php
 	echo "</tr></table></br>";
 
 	if(isset($_GET['buttonPressed'])){

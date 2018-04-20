@@ -3,6 +3,8 @@
 	if(isset($_GET["buttonPressed"]) && $_GET["buttonPressed"] == "Log Out"){
 		unset($_COOKIE['user']);
 		unset($_COOKIE['pass']);
+		setcookie("user", "", time() - 3600, "/");
+		setcookie("pass", "", time() - 3600, "/");
 	}
 	$serverName = 		"127.0.0.1";
 	$serverUserName = 	"admin";
@@ -56,9 +58,7 @@
 		
 		}
 	}else{
-		if(!isset($_COOKIE["user"])){
-			//no cookie
-		}else{
+		if(isset($_COOKIE["user"])){
 			//cookie
 			$currentEmail = $_COOKIE["user"];
 			$currentPass = 	$_COOKIE["pass"];
