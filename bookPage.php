@@ -85,9 +85,51 @@
 		</th>
 		<?php
 	}
-	echo "</tr></table></br></br></br>";
-?>
+	echo "</tr></table></br>";
 
+	if(isset($_GET['title'])){
+		$sql = "SELECT * FROM books, authors WHERE isbn = authorid AND name = '".$_GET['title']."' ORDER BY author_name";
+		$authorResults = mysqli_query($conn, $sql);
+		$sql = "SELECT * FROM books, keywords WHERE isbn = keyid AND name = '".$_GET['title']."' ORDER BY keyword";
+		$keywordResults = mysqli_query($conn, $sql);
+		$sql = "SELECT * FROM books, reviews, users WHERE isbn = book AND user = userid AND name = '".$_GET['title']."' ORDER BY score DESC";
+		$reviewResults = mysqli_query($conn, $sql);
+		
+		echo "<h2>".$_GET['title']."</h2>";
+
+		$authorOutput = "<h4>By ";
+		$authors = [];
+		for($row = mysqli_fetch_assoc($authorResults); $row != NULL; $row = mysqli_fetch_assoc($authorResults)){
+			$authors[] = $row['author_name'];
+		}
+		$authorOutput = $authorOutput.$authors[0];// first author
+		for($i = 1; $i < count($authors) - 1; $i++){// each additional author
+			$authorOutput = $authorOutput.", ".$authors[$i];
+		}
+		if(count($authors) > 1){// last author
+			$authorOutput = $authorOutput." and ".$authors[count($authors)-1];
+		}
+		$authorOutput = $authorOutput."</h4>";
+		echo $authorOutput;
+		$keywords = "<h4 align='right'>Keywords:";
+		for($row = mysqli_fetch_assoc($keywordResults); $row != NULL; $row = mysqli_fetch_assoc($keywordResults)){
+			$keywords = $keywords." ".$row['keyword'];
+		}
+		$keywords = $keywords."</h4>";
+		echo $keywords;
+		echo "<center>".$row['summary']."";
+		echo "<table>";
+		for($row = mysqli_fetch_assoc($reviewResults); $row != NULL; $row = mysqli_fetch_assoc($reviewResults)){
+			echo "<tr>";
+			echo "<th>".$row['fname']."</th>";
+			echo "<th>".$row['score']."/5</th>";
+			echo "<th>".$row['review']."</th>";
+			echo "</tr>";
+		}
+		echo "</table></center>";
+	}
+	
+?>
 
 
 
