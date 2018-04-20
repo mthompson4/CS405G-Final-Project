@@ -48,10 +48,10 @@
 		$results = mysqli_query($conn, $sql);
 		$row = mysqli_fetch_assoc($results);
 		echo '<form method = "get">';
-		echo "<table>";
-		echo "<tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Email</th><th>Password</th><th>Age</th><th>Gender</th><th>User Type</th><th>Option</th></tr>";
+		echo "<center><table bgcolor='#CCCCCC' style='border: 1px solid black; border-collapse: collapse;'>";
+		echo "<tr style='border: 1px solid black; border-collapse: collapse;'><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Email</th><th>Password</th><th>Age</th><th>Gender</th><th>User Type</th><th>Option</th></tr>";
 		while($row != NULL){
-			echo "<tr>";
+			echo "<tr style='border: 1px solid black; border-collapse: collapse;'>";
 			echo "<td>".$row["fname"]."</td>";
 			echo "<td>".$row["mname"]."</td>";
 			echo "<td>".$row["lname"]."</td>";
@@ -78,7 +78,7 @@
 		}
 		?>
 			</table>
-			<input type="submit" name="buttonPressed" value="Confirm" style="width: 150px; height: 40px; font-size:12pt">
+			<input type="submit" name="buttonPressed" value="Confirm" style="width: 150px; height: 40px; font-size:12pt"></center>
 			</form>
 		<?php
 	}
