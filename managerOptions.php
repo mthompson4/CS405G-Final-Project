@@ -121,6 +121,7 @@
 		<center>
 		<table>
 		<tr><th><font size='5'>Title: </font></th><th><input type="text" name="newBookTitle" style="width: 200px; height: 25px" required></th></tr>
+		<tr><th><font size='5'>Authors: </font></th><th><input type="text" name="newBookAuthors" style="width: 200px; height: 25px" required></th></tr>
 		<tr><th><font size='5'>Summary: </font></th><th><input type="text" name="newBookSummary" style="width: 200px; height: 25px" required></th></tr>
 		<tr><th><font size='5'>Language: </font></th><th><input type="text" name="newBookLanguage" style="width: 200px; height: 25px"></th></tr>
 		<tr><th><font size='5'>Publisher: </font></th><th><input type="text" name="newBookPublisher" style="width: 200px; height: 25px" required></th></tr>
@@ -135,6 +136,7 @@
 	}
 	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Add"){
 		$insertingTitle = $_POST["newBookTitle"];
+		$insertingAuthors = $_POST["newBookAuthors"];
 		$insertingSummary = $_POST["newBookSummary"];
 		$insertingLanguage = $_POST["newBookLanguage"];
 		$insertingPublisher = $_POST["newBookPublisher"];
@@ -145,6 +147,16 @@
 		$sql = "INSERT INTO books(name, summary, language, publisher, date_published, price, qty)
 				VALUES('$insertingTitle', '$insertingSummary', '$insertingLanguage', '$insertingPublisher', '$insertingDate', '$insertingPrice', '$insertingQuantity')";
 		mysqli_query($conn, $sql);
+		$authorlist = explode(" ", $insertingAuthors);
+		$sqlgetnewisbn = "SELECT isbn FROM books WHERE name = '".$insertingTitle."'";
+		$newisbncall = mysqli_query($conn, $sqlgetnewisbn);
+		$row = mysqli_fetch_assoc($newisbncall);
+		$newisbn = $row['isbn'];
+		for($x = 0; $x < count($authorlist); $x++){
+			$sqlAddNewAuthors = "INSERT INTO authors(authorid, author_name) VALUES(".$newisbn.", '".$authorlist[$x]."')";
+			mysqli_query($conn, $sqlAddNewAuthors);
+		}
+		
 	}
 	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Edit Books"){
 		$sql = "SELECT * FROM books";
