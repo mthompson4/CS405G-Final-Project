@@ -97,18 +97,22 @@
 
 	if(isset($_GET['buttonPressed'])){
 		if($_GET['buttonPressed'] == "Submit"){
-			echo "Review submitted. Redirecting...";
-			$sql = "SELECT isbn FROM books WHERE name = '".$_GET['title']."'";
-			$results = mysqli_query($conn, $sql);
-			$row = mysqli_fetch_assoc($results);
-			
-			$userSub = mysqli_real_escape_string($conn, $currentUser);
-			$isbnSub = mysqli_real_escape_string($conn, $row['isbn']);
-			$scoreSub = mysqli_real_escape_string($conn, $_POST['score']);
-			$reviewSub = mysqli_real_escape_string($conn, $_POST['review']);
-			$sql = "INSERT INTO reviews (user, book, score, review) VALUES ('$userSub', '$isbnSub', '$scoreSub', '$reviewSub')";
-			mysqli_query($conn, $sql);
-			echo '<meta http-equiv="refresh" content = "2; url = /bookPage.php/?title='.$_GET['title'].'">';
+			if(!isset($currentFName)){
+				echo '<meta http-equiv="refresh" content = "0; url = /index.html">';
+			}else{
+				echo "Review submitted. Redirecting...";
+				$sql = "SELECT isbn FROM books WHERE name = '".$_GET['title']."'";
+				$results = mysqli_query($conn, $sql);
+				$row = mysqli_fetch_assoc($results);
+				
+				$userSub = mysqli_real_escape_string($conn, $currentUser);
+				$isbnSub = mysqli_real_escape_string($conn, $row['isbn']);
+				$scoreSub = mysqli_real_escape_string($conn, $_POST['score']);
+				$reviewSub = mysqli_real_escape_string($conn, $_POST['review']);
+				$sql = "INSERT INTO reviews (user, book, score, review) VALUES ('$userSub', '$isbnSub', '$scoreSub', '$reviewSub')";
+				mysqli_query($conn, $sql);
+				echo '<meta http-equiv="refresh" content = "2; url = /bookPage.php/?title='.$_GET['title'].'">';
+			}
 		}
 	}else if(isset($_GET['title'])){
 		$sql = "SELECT * FROM books, authors WHERE isbn = authorid AND name = '".$_GET['title']."' ORDER BY author_name";
