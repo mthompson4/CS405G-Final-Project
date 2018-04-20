@@ -124,10 +124,14 @@
 		
 		if(mysqli_num_rows($authorResults) == 0)
 			echo '<meta http-equiv="refresh" content = "0; url = /mainPage.php">';
+		
+		$sql = "SELECT isbn FROM books WHERE name = '".$_GET['title']."'";
+		$resultISBN = mysqli_query($conn, $sql);
+		$row = mysqli_fetch_assoc($resultISBN);
 		?>
 			</br></br><table style="float:right"><tr><th>
-			<form method="post" action="/orderBook.php">
-			<input type="submit" name="bookTitle" value="Order <?php echo $_GET['title'];?>" align="right"/>
+			<form method="get" action="/orderBook.php">
+			<button name="isbn" value="<?php echo $row['isbn'];?>" align="right">Order</button>
 			</form>
 			</th></tr></table>
 		<?php
