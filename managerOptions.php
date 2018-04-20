@@ -38,6 +38,7 @@
 	<form method="get">
 	<input type="submit" name="buttonPressed" value="Show Users" style="width: 150px; height: 40px; font-size:12pt">
 	<input type="submit" name="buttonPressed" value="Add Book" style="width: 150px; height: 40px; font-size:12pt">
+	<input type="submit" name="buttonPressed" value="Edit Books" style="width: 150px; height: 40px; font-size:12pt">
 	</form>
 </center>
 
@@ -104,29 +105,6 @@
 				mysqli_query($conn, $sqlupdate);
 				echo "User ".$row["fname"]." has been removed from the database.<br/>";
 			}
-			/*echo "<tr>";
-			echo "<td>".$row["fname"]."</td>";
-			echo "<td>".$row["mname"]."</td>";
-			echo "<td>".$row["lname"]."</td>";
-			echo "<td>".$row["email"]."</td>";
-			echo "<td>".$row["password"]."</td>";
-			echo "<td>".$row["age"]."</td>";
-			echo "<td>".$row["gender"]."</td>";
-			echo "<td>".$row["user_type"]."</td>";
-			echo "<td>";
-			echo "<select name = 'userChange".$row["userid"]."'>";
-			?>
-			
-				<option value="">--</option>
-				<option value="promote">Promote</option>
-				<option value="demote">Demote</option>
-				<option value="delete">Delete</option>
-			</select>
-			
-			</td>
-			<?php
-			echo "</tr>";
-			echo "</table>";*/
 			$row = mysqli_fetch_assoc($results);
 		}
 		?>
@@ -156,7 +134,6 @@
 		<?php
 	}
 	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Add"){
-		//echo "hi";
 		$insertingTitle = $_POST["newBookTitle"];
 		$insertingSummary = $_POST["newBookSummary"];
 		$insertingLanguage = $_POST["newBookLanguage"];
@@ -168,6 +145,116 @@
 		$sql = "INSERT INTO books(name, summary, language, publisher, date_published, price, qty)
 				VALUES('$insertingTitle', '$insertingSummary', '$insertingLanguage', '$insertingPublisher', '$insertingDate', '$insertingPrice', '$insertingQuantity')";
 		mysqli_query($conn, $sql);
+	}
+	else if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Edit Books"){
+		$sql = "SELECT * FROM books";
+		$results = mysqli_query($conn, $sql);
+		$row = mysqli_fetch_assoc($results);
+		echo '<form method = "get">';
+		echo "<table>";
+		echo "<tr><th>Title</th><th>ISBN</th><th>Summary</th><th>Language</th><th>Publisher</th><th>Publishing Date</th><th>Price</th><th>Quantity</th><th>Keywords</th><th>Edit</th><th>Delete</th></tr>";
+		while($row != NULL){
+			echo "<tr>";
+			echo "<td>".$row["name"]."</td>";
+			echo "<td>".$row["isbn"]."</td>";
+			echo "<td>".$row["summary"]."</td>";
+			echo "<td>".$row["language"]."</td>";
+			echo "<td>".$row["publisher"]."</td>";
+			echo "<td>".$row["date_published"]."</td>";
+			echo "<td>".$row["price"]."</td>";
+			echo "<td>".$row["qty"]."</td>";
+			$sqlgetkeywords = "SELECT keyword FROM keywords WHERE keyid = ".$row['isbn'];
+			$keywordlist = mysqli_query($conn, $sqlgetkeywords);
+			$currentKeyword = mysqli_fetch_assoc($keywordlist);
+			$keys = "";
+			while($currentKeyword != NULL){
+				$keys = $keys.$currentKeyword['keyword']."</br>";
+				$currentKeyword = mysqli_fetch_assoc($keywordlist);
+			}
+			
+			echo "<td>$keys</td>";
+			
+			echo "<form method='get'>";
+			echo "<td>";
+			echo "<input type='submit' name='Edit".$row['isbn']."' value='Edit'>";
+			echo "</td>";
+			echo "<td>";
+			echo "<input type='submit' name='Delete".$row['isbn']."' value='Delete'>";
+			echo "</td>";
+			echo "</form>";
+
+			echo "</tr>";
+			
+			$row = mysqli_fetch_assoc($results);
+		}
+		?>
+			</table>
+			</form>
+		<?php
+	}
+	$sqlcheck = "SELECT * FROM books";
+	$resultscheck = mysqli_query($conn, $sqlcheck);
+	$row = mysqli_fetch_assoc($resultscheck);
+	while($row != NULL){
+		if(isset($_GET['Edit'.$row['isbn']]) && $_GET['Edit'.$row['isbn']] == "Edit"){
+			?>
+			<div>
+		<center><h1><font size="7">Add New Book</font></h1></center>
+		</div>
+		<form action="/managerOptions.php/?buttonPressed=confirmChanges&ISBN=<?php echo htmlspecialchars($row['isbn']) ?>" method="post">
+		<center>
+		<table>
+		<tr><th><font size='5'>Title: </font></th><th><input type="text" name="editedBookTitle" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["name"])?>" required></th></tr>
+		<tr><th><font size='5'>Summary: </font></th><th><input type="text" name="editedBookSummary" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["summary"])?>" required></th></tr>
+		<tr><th><font size='5'>Language: </font></th><th><input type="text" name="editedBookLanguage" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["language"])?>"></th></tr>
+		<tr><th><font size='5'>Publisher: </font></th><th><input type="text" name="editedBookPublisher" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["publisher"])?>" required></th></tr>
+		<tr><th><font size='5'>Date Published: </font></th><th><input type="date" name="editedBookDate" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["date_published"])?>" required></th></tr>
+		<tr><th><font size='5'>Price: </font></th><th><input type="number" name="editedBookPrice" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["price"])?>" required></th></tr>
+		<tr><th><font size='5'>Quantity: </font></th><th><input type="number" name="editedBookQuantity" style="width: 200px; height: 25px" value = "<?php echo htmlspecialchars($row["qty"])?>" required></th></tr>
+		<?php
+		
+		$sqlkeywords = "SELECT keyword FROM keywords WHERE keyid = ".$row['isbn'];
+		$keywordresults = mysqli_query($conn, $sqlkeywords);
+		$keywordRow = mysqli_fetch_assoc($keywordresults);
+		$keywordString = "";
+		while($keywordRow != NULL){
+			$keywordString = $keywordString.$keywordRow['keyword']." ";
+			$keywordRow = mysqli_fetch_assoc($keywordresults);
+		}
+		
+		?>
+		<tr><th><font size='5'>Keywords: </font></th><th><input type="text" name="editedBookKeywords" style="width: 200px; height: 25px" value = "<?php echo $keywordString ?>" required></th></tr>
+		</table><br/>
+		<input type="submit" name = "buttonPressed" value="Confirm Changes" style="width: 150px; height: 40px; font-size:12pt">
+		</center>
+		</form>	
+				
+			<?php
+		}
+		else if(isset($_GET['Delete'.$row['isbn']]) && $_GET['Delete'.$row['isbn']] == "Delete"){
+				$sqlremove = "DELETE FROM books WHERE isbn = ".$row['isbn'];
+				mysqli_query($conn, $sqlremove);
+				echo mysqli_error($conn);
+				echo "Book removed from database.";
+		}
+		
+		$row = mysqli_fetch_assoc($resultscheck);
+	}
+	if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "confirmChanges"){
+			if(isset($_GET['ISBN'])){
+				$editingISBN = $_GET['ISBN'];
+			}
+			$sqledit = "UPDATE books SET name = '".$_POST['editedBookTitle']."', summary = '".$_POST['editedBookSummary']."', language = '".$_POST['editedBookLanguage']."', publisher = '".$_POST['editedBookPublisher']."', date_published = '".$_POST['editedBookDate']."', price = '".$_POST['editedBookPrice']."', qty = '".$_POST['editedBookQuantity']."' WHERE isbn = ".$editingISBN; 
+			mysqli_query($conn, $sqledit);
+			$keywordArray = explode(" ", $_POST['editedBookKeywords']);
+			$sqlDeleteCurrentKeywords = "DELETE FROM keywords WHERE keyid = ".$_GET['ISBN'];
+			mysqli_query($conn, $sqlDeleteCurrentKeywords);
+			for($x = 0; $x < count($keywordArray); $x++){
+				$sqlAddNewKeywords = "INSERT INTO keywords(keyid, keyword) VALUES(".$_GET['ISBN'].", '".$keywordArray[$x]."')";
+				mysqli_query($conn, $sqlAddNewKeywords);
+			}
+			//echo "$sqledit<br/>";
+			echo "Book updated in database.";
 	}
 	mysqli_close($conn);
 ?>
