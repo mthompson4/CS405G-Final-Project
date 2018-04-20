@@ -23,12 +23,13 @@
 		$currentEmail = $_COOKIE["user"];
 		$currentPass = 	$_COOKIE["pass"];
 		
-		$sql = 'SELECT fname, mname, lname, age, gender, user_type FROM users WHERE email="'.$currentEmail.'" AND password="'.$currentPass.'"';
+		$sql = 'SELECT * FROM users WHERE email="'.$currentEmail.'" AND password="'.$currentPass.'"';
 		$results = mysqli_query($conn, $sql);
 		
 		if(mysqli_num_rows($results) > 0){
 			
 			$row = mysqli_fetch_assoc($results);
+			$currentUser =		$row["userid"];
 			$currentFName = 	$row["fname"];
 			$currentMName = 	$row["mname"];
 			$currentLName = 	$row["lname"];
@@ -87,7 +88,22 @@
 	}
 	echo "</tr></table></br>";
 
-	if(isset($_GET['title'])){
+	if(isset($_GET['buttonPressed'])){
+		if($_GET['buttonPressed'] == "Submit"){
+			echo "Review submitted. Redirecting...";
+			$sql = "SELECT isbn FROM books WHERE name = '".$_GET['title']."'";
+			$results = mysqli_query($conn, $sql);
+			$row = mysqli_fetch_assoc($results);
+			
+			$userSub = mysqli_real_escape_string($conn, $currentUser);
+			$isbnSub = mysqli_real_escape_string($conn, $row['isbn']);
+			$scoreSub = mysqli_real_escape_string($conn, $_POST['score']);
+			$reviewSub = mysqli_real_escape_string($conn, $_POST['review']);
+			$sql = "INSERT INTO reviews (user, book, score, review) VALUES ('$userSub', '$isbnSub', '$scoreSub', '$reviewSub')";
+			mysqli_query($conn, $sql);
+			echo '<meta http-equiv="refresh" content = "2; url = /bookPage.php/?title='.$_GET['title'].'">';
+		}
+	}else if(isset($_GET['title'])){
 		$sql = "SELECT * FROM books, authors WHERE isbn = authorid AND name = '".$_GET['title']."' ORDER BY author_name";
 		$authorResults = mysqli_query($conn, $sql);
 		$sql = "SELECT * FROM books, keywords WHERE isbn = keyid AND name = '".$_GET['title']."' ORDER BY keyword";
@@ -95,6 +111,16 @@
 		$sql = "SELECT * FROM books, reviews, users WHERE isbn = book AND user = userid AND name = '".$_GET['title']."' ORDER BY score DESC";
 		$reviewResults = mysqli_query($conn, $sql);
 		
+		if(mysqli_num_rows($authorResults) == 0)
+			echo '<meta http-equiv="refresh" content = "0; url = /mainPage.php">';
+		?>
+			</br></br><table style="float:right"><tr><th>
+			<form method="post" action="/orderBook.php">
+			<input type="submit" name="bookTitle" value="Order <?php echo $_GET['title'];?>" align="right"/>
+			</form>
+			</th></tr></table>
+		<?php
+
 		echo "<h2>".$_GET['title']."</h2>";
 
 		$authorOutput = "<h4>By ";
@@ -127,6 +153,16 @@
 			echo "</tr>";
 		}
 		echo "</table></center>";
+		?>
+		<form method="post" action="?buttonPressed=Submit&title=<?php echo $_GET['title'];?>">
+		<h4>Leave a review: </h4>
+		<input  name="score" type="number" min="0" max="5"> /5</br>
+		<textarea name="review" cols="50" rows="10" maxlength="500">Write your review here!</textarea></br>
+		<input type="submit" name="buttonPressed" value="Submit" style="width: 150px; height: 40px; font-size:12pt">
+		</form>
+		<?php
+	}else {
+		echo '<meta http-equiv="refresh" content = "0; url = /mainPage.php">';
 	}
 	
 ?>
