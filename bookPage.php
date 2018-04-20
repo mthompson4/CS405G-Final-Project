@@ -159,9 +159,9 @@
 		$keywords = $keywords."</h4>";
 		echo $keywords;
 		echo "<center>".$row['summary']."";
-		echo "<table>";
+		echo "<table bgcolor='#CCCCCC' style='border: 1px solid black; border-collapse: collapse;'>";
 		for($row = mysqli_fetch_assoc($reviewResults); $row != NULL; $row = mysqli_fetch_assoc($reviewResults)){
-			echo "<tr>";
+			echo "<tr style='border: 1px solid black; border-collapse: collapse;'>";
 			echo "<th>".$row['fname']."</th>";
 			echo "<th>".$row['score']."/5</th>";
 			echo "<th>".$row['review']."</th>";

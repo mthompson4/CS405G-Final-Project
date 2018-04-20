@@ -86,7 +86,7 @@
 		</center>
 		</form>
 		
-		<center><h2></br>Order History</h2><table>
+		<center><h2></br>Order History</h2><table bgcolor='#CCCCCC' style='border: 1px solid black; border-collapse: collapse;'>
 		<tr>
 			<th>Book Name</th>
 			<th>Date Ordered</th>
@@ -98,7 +98,7 @@
 			$sql = "SELECT name, date_ordered, orders.qty, cost, order_status FROM orders, books WHERE book_ordered = isbn AND buyer = '".$currentUser."' ORDER BY order_num DESC";
 			$results = mysqli_query($conn, $sql);
 			for($row = mysqli_fetch_assoc($results); $row != NULL; $row = mysqli_fetch_assoc($results)){
-				echo '<tr>';
+				echo '<tr style="border: 1px solid black; border-collapse: collapse;">';
 					echo '<td>';
 						echo $row['name'];
 					echo '</td>';

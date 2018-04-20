@@ -193,7 +193,7 @@
 
 <?php	
 	if(isset($_GET['buttonPressed']) && $_GET['buttonPressed'] == "Search"){
-		$sql = "SELECT * FROM books, authors, keywords WHERE books.isbn = authors.authorid AND books.isbn = keywords.keyid";
+		$sql = "SELECT DISTINCT name, publisher, date_published, price, language, isbn FROM books, authors, keywords WHERE books.isbn = authors.authorid AND books.isbn = keywords.keyid";
 		$sql = $sql." AND name LIKE '%{$_GET['search']}%'";
 		if(isset($_GET['author'])){
 			$sql = $sql." AND author_name LIKE '%{$_GET['author']}%'";
@@ -233,12 +233,19 @@
 	}
 	$results = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($results);
-	echo "<table>";
-	echo "<tr><th>Title</th><th>Author</th><th>Publisher</th><th>Date Published</th><th>Price</th><th>Language</th></tr>";
+	echo "<table bgcolor='#CCCCCC' style='border: 1px solid black; border-collapse: collapse;'>";
+	echo "<tr style='border: 1px solid black; border-collapse: collapse;'><th>Title</th><th>Author</th><th>Publisher</th><th>Date Published</th><th>Price</th><th>Language</th></tr>";
 	while($row != NULL){
-		echo "<tr>";
+		echo "<tr style='border: 1px solid black; border-collapse: collapse;'>";
 		echo "<td><a href='/bookPage.php/?title=".$row["name"]."'>".$row["name"]."</a></td>";
-		echo "<td>".$row["author_name"]."</td>";
+		$sql = "SELECT author_name FROM authors WHERE authorid = ".$row['isbn'];
+		$authorResults = mysqli_query($conn, $sql);
+		echo "<td>";
+		for($rowAuthor = mysqli_fetch_assoc($authorResults); $rowAuthor != NULL; $rowAuthor = mysqli_fetch_assoc($authorResults)){
+			echo $rowAuthor["author_name"]."</br>";
+		}
+		echo "</td>";
+		//echo "<td>".$row["author_name"]."</td>";
 		echo "<td>".$row["publisher"]."</td>";
 		echo "<td>".$row["date_published"]."</td>";
 		echo "<td>$".$row["price"]."</td>";
